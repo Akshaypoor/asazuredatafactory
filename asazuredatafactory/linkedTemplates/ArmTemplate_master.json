@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDb'"
 		},
+		"Newblob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Newblob'"
+		},
 		"akazurestorage_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'akazurestorage'"
@@ -51,6 +55,9 @@
 					},
 					"AzureSqlDb_connectionString": {
 						"value": "[parameters('AzureSqlDb_connectionString')]"
+					},
+					"Newblob_connectionString": {
+						"value": "[parameters('Newblob_connectionString')]"
 					},
 					"akazurestorage_connectionString": {
 						"value": "[parameters('akazurestorage_connectionString')]"

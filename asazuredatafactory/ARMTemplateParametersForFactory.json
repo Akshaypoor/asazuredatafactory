@@ -11,6 +11,9 @@
 		"AzureSqlDb_connectionString": {
 			"value": ""
 		},
+		"Newblob_connectionString": {
+			"value": ""
+		},
 		"akazurestorage_connectionString": {
 			"value": ""
 		}
