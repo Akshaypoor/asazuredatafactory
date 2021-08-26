@@ -19,7 +19,15 @@
 					"name": "ratingparDS"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "MovieJoinRatingSink"
+				}
+			],
 			"transformations": [
 				{
 					"name": "Dropgenre"
@@ -40,7 +48,7 @@
 					"name": "ExcludMovid"
 				}
 			],
-			"script": "source(output(\n\t\tmovieId as string,\n\t\ttitle as string,\n\t\tgenres as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> MovieparDS\nsource(output(\n\t\tuserId as string,\n\t\tmovieId as string,\n\t\trating as string,\n\t\ttimestamp as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> ratingparDS\nMovieparDS select(mapColumn(\n\t\tmovieId,\n\t\ttitle\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Dropgenre\nratingparDS select(mapColumn(\n\t\tuserId,\n\t\tmovieId,\n\t\trating\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropTimeStamp\nDropTimeStamp filter(rating >= '1.0') ~> ratingGTE1\nDropgenre, ratingGTE1 join(Dropgenre@movieId == DropTimeStamp@movieId,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinMovieRating\nJoinMovieRating sort(desc(rating, true)) ~> SortbyRating\nSortbyRating select(mapColumn(\n\t\tmovieId = Dropgenre@movieId,\n\t\ttitle,\n\t\tuserId,\n\t\trating\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ExcludMovid"
+			"script": "source(output(\n\t\tmovieId as string,\n\t\ttitle as string,\n\t\tgenres as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> MovieparDS\nsource(output(\n\t\tuserId as string,\n\t\tmovieId as string,\n\t\trating as string,\n\t\ttimestamp as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> ratingparDS\nMovieparDS select(mapColumn(\n\t\tmovieId,\n\t\ttitle\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Dropgenre\nratingparDS select(mapColumn(\n\t\tuserId,\n\t\tmovieId,\n\t\trating\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropTimeStamp\nDropTimeStamp filter(rating >= '1.0') ~> ratingGTE1\nDropgenre, ratingGTE1 join(Dropgenre@movieId == DropTimeStamp@movieId,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinMovieRating\nJoinMovieRating sort(desc(rating, true)) ~> SortbyRating\nSortbyRating select(mapColumn(\n\t\tmovieId = Dropgenre@movieId,\n\t\ttitle,\n\t\tuserId,\n\t\trating\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ExcludMovid\nExcludMovid sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> MovieJoinRatingSink"
 		}
 	}
 }
