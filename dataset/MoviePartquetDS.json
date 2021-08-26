@@ -1,0 +1,36 @@
+{
+	"name": "MoviePartquetDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "LakeAnalytics"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "movie",
+				"container": "analytics"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "movieId",
+				"type": "UTF8"
+			},
+			{
+				"name": "title",
+				"type": "UTF8"
+			},
+			{
+				"name": "genres",
+				"type": "UTF8"
+			}
+		]
+	}
+}
